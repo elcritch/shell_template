@@ -12,7 +12,7 @@ defmodule ShellTemplate.Grammar do
 
   define :elem, "space? ( dollar_esc / simple_var / bracket_var / plaintext) space?" do
     all ->
-      IO.puts "elem: #{inspect all}"
+      # IO.puts "elem: #{inspect all}"
       all |> List.flatten() |> Enum.reject(&(&1 == nil))
   end
 
@@ -25,7 +25,7 @@ defmodule ShellTemplate.Grammar do
     [var, nil] ->
       {:var, to_string(var), [bracket: true]}
     [var, extras] = all ->
-      IO.puts "bracket_var:extra: #{inspect all}"
+      # IO.puts "bracket_var:extra: #{inspect all}"
       {:var, to_string(var), [bracket: true] ++ extras}
     other ->
       IO.puts "bracket_var:other: #{inspect other}"
