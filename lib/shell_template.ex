@@ -3,8 +3,6 @@ defmodule ShellTemplate do
   Documentation for ShellTemplate.
   """
 
-  @bracket_regex ~r/(?!\\) \${ (\w+) }/x
-  @single_regex ~r/(?!\\) \$ (\w+) /x
 
   @doc """
 
@@ -13,51 +11,20 @@ defmodule ShellTemplate do
 
   """
   def format(template, values) when is_map(values) do
-    result = ""
-    IO.puts "results: #{inspect result}"
-    ""
+    results = ShellTemplate.Grammar.parse!(template)
+    values = Enum.map(values, fn {k,v} -> {to_string(k), v} end) |> Map.new
+
+    Enum.map(results, &handle(&1, values)) |> to_string()
+  end
+
+  defp handle({:text, text, opts}, _values) do
+    text
+  end
+
+  defp handle({:var, varname, opts}, values) when is_map(values) do
+
+    Map.fetch!(values, varname)
   end
 
 end
 
-defmodule ShellVarGrammar do
-  use Neotomex.ExGrammar
-
-  @root true
-  define :top, "elem+" do
-    all ->
-      IO.puts "top: #{inspect all}"
-      all |> List.flatten()
-  end
-
-  define :elem, "<space?> ( dollar_esc / simple_var / bracket_var / plaintext) <space?>" do
-    all ->
-      IO.puts "all: #{inspect all}"
-      all |> List.flatten()
-  end
-
-  define :simple_var, "<'$'> word" do
-    var ->
-      {:var, to_string(var), []}
-  end
-
-  define :bracket_var, "<'${'> word <'}'>" do
-    var ->
-      {:var, to_string(var), :bracket}
-  end
-
-  define :dollar_esc, "'$$'" do
-    _val ->
-      {:text, "$", :escaped}
-  end
-
-  define :plaintext, "(<!'$'> .)+" do
-    other ->
-      {:text, to_string(other)}
-  end
-
-  define :dollar, "[$]"
-  define :word, "[A-Za-z0-9_]+"
-  define :letter, "[A-Za-z]"
-  define :space, "[ \\r\\n\\s\\t]"
-end
