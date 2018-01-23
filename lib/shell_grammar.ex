@@ -23,12 +23,12 @@ defmodule ShellTemplate.Grammar do
 
   define :bracket_var, "<'${'> word <'}'>" do
     var ->
-      {:var, to_string(var), :bracket}
+      {:var, to_string(var), [bracket: true]}
   end
 
   define :dollar_esc, "'$$'" do
     _val ->
-      {:text, "$", :escaped}
+      {:text, "$", []}
   end
 
   define :plaintext, "(<!'$'> .)+" do

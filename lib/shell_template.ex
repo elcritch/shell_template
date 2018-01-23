@@ -23,8 +23,14 @@ defmodule ShellTemplate do
 
   defp handle({:var, varname, opts}, values) when is_map(values) do
 
-    Map.fetch!(values, varname)
+    case Keyword.get(opts, :default) do
+      nil ->
+        Map.fetch!(values, varname)
+      default ->
+        Map.get(values, varname, default)
+    end
   end
+
 
 end
 
