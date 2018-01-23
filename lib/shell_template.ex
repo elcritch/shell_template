@@ -20,7 +20,7 @@ defmodule ShellTemplate do
 
 end
 
-defmodule TestGrammar do
+defmodule ShellVarGrammar do
   use Neotomex.ExGrammar
 
   @root true
@@ -43,12 +43,12 @@ defmodule TestGrammar do
 
   define :bracket_var, "<'${'> word <'}'>" do
     var ->
-      {:var, to_string(var), []}
+      {:var, to_string(var), :bracket}
   end
 
   define :dollar_esc, "'$$'" do
     _val ->
-      []
+      {:text, "$", :escaped}
   end
 
   define :plaintext, "(<!'$'> .)+" do
@@ -61,4 +61,3 @@ defmodule TestGrammar do
   define :letter, "[A-Za-z]"
   define :space, "[ \\r\\n\\s\\t]"
 end
-
