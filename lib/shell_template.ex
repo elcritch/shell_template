@@ -6,8 +6,8 @@ defmodule ShellTemplate do
 
   @doc """
 
-      iex> ShellTemplate.format("test ${TEST}!", %{TEST: "hello world"})
-      "hello world!"
+      iex> ShellTemplate.format("test: ${TEST}!", %{TEST: "hello world"})
+      "test: hello world!"
 
   """
   def format(template, values) when is_map(values) do
