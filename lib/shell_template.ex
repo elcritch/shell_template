@@ -27,32 +27,38 @@ defmodule TestGrammar do
   define :top, "elem+" do
     all ->
       IO.puts "top: #{inspect all}"
-      all
+      all |> List.flatten()
   end
 
-  define :elem, "space? (var / number) space?" do
+  define :elem, "<space?> ( dollar_esc / simple_var / bracket_var / plaintext) <space?>" do
     all ->
-      IO.puts "elem: #{inspect all}"
-      "elem:"<>inspect(all)
+      IO.puts "all: #{inspect all}"
+      all |> List.flatten()
   end
 
-  define :var, "dollar word (word* digit)*" do
-    all ->
-      IO.puts "var: #{inspect all}"
-      "var:"<>inspect(all)
+  define :simple_var, "<'$'> word" do
+    var ->
+      {:var, to_string(var), []}
   end
 
-  define :number, "digit+" do
-    digits ->
-      IO.puts "number: #{inspect digits}"
-      digits |> Enum.join |> String.to_integer
+  define :bracket_var, "<'${'> word <'}'>" do
+    var ->
+      {:var, to_string(var), []}
+  end
+
+  define :dollar_esc, "'$$'" do
+    _val ->
+      []
+  end
+
+  define :plaintext, "(<!'$'> .)+" do
+    other ->
+      {:text, to_string(other)}
   end
 
   define :dollar, "[$]"
-  #define :word, "[A-Za-z]"
-  define :word, "[A-Za-z]"
-  define :digit, "[0-9]"
-
+  define :word, "[A-Za-z0-9_]+"
+  define :letter, "[A-Za-z]"
   define :space, "[ \\r\\n\\s\\t]"
 end
 
