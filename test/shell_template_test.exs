@@ -21,4 +21,9 @@ defmodule ShellTemplateTest do
     result = ShellTemplate.format("test: ${TEST}.", %{test: "hello world"}, upcase: true)
     assert result == "test: hello world."
   end
+
+  test "iolist output " do
+    result = ShellTemplate.format("test: ${test};", %{test: "hello world"}, iolist: true)
+    assert result == ["test: ", "hello world", ";"]
+  end
 end

@@ -24,7 +24,7 @@ defmodule ShellTemplate do
 
     formatter = opts[:iolist] == true && fn x -> x end || &to_string/1 
 
-    Enum.map(results, &handle(&1, values)) |> to_string()
+    Enum.map(results, &handle(&1, values)) |> formatter.()
   end
 
   defp handle({:text, text, opts}, _values) do
