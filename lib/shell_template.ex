@@ -28,8 +28,10 @@ defmodule ShellTemplate do
     case Keyword.get(opts, :default) do
       nil ->
         Map.fetch!(values, varname)
-      default ->
+      default when is_binary(default) ->
         Map.get(values, varname, default)
+      {:var, def_varname, _} ->
+        Map.get_lazy(values, varname, fn -> Map.get(values, def_varname) end)
     end
   end
 

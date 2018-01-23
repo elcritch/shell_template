@@ -11,4 +11,9 @@ defmodule ShellTemplateTest do
     result = ShellTemplate.format("test: ${TEST:-anybody_out_there}?", %{TEST1: "hello world"})
     assert result == "test: anybody_out_there?"
   end
+
+  test "greets the world default and var?" do
+    result = ShellTemplate.format("test: ${TEST:-$TEST1}?", %{TEST1: "hello world"})
+    assert result == "test: hello world?"
+  end
 end

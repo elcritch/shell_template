@@ -25,16 +25,19 @@ defmodule ShellTemplate.Grammar do
     [var, nil] ->
       {:var, to_string(var), [bracket: true]}
     [var, extras] = all ->
-      # IO.puts "bracket_var:extra: #{inspect all}"
+      IO.puts "bracket_var:extra: #{inspect all}"
       {:var, to_string(var), [bracket: true] ++ extras}
     other ->
       IO.puts "bracket_var:other: #{inspect other}"
       other
   end
 
-  define :var_opts, "<':-'> ( (<!'}'> .)*)" do
+  define :var_opts, "<':-'> (simple_var / (<!'}'> .)*)" do
+    [{:var, value, []} = term] ->
+      IO.puts "var_opts: #{inspect term}"
+      [default: term]
     all ->
-      # IO.puts "var_opts: #{inspect all}"
+      IO.puts "var_opts: #{inspect all}"
       [default: all |> to_string()]
   end
 
