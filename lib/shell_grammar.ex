@@ -6,7 +6,7 @@ defmodule ShellTemplate.Grammar do
   @root true
   define :top, "elem+" do
     all ->
-      IO.puts "top: #{inspect all}"
+      # IO.puts "top: #{inspect all}"
       all |> List.flatten()
   end
 
@@ -21,10 +21,23 @@ defmodule ShellTemplate.Grammar do
       {:var, to_string(var), []}
   end
 
-  define :bracket_var, "<'${'> word <'}'>" do
-    var ->
+  define :bracket_var, "<'${'> word var_opts? <'}'>" do
+    [var, nil] ->
       {:var, to_string(var), [bracket: true]}
+    [var, extras] = all ->
+      IO.puts "bracket_var:extra: #{inspect all}"
+      {:var, to_string(var), [bracket: true, extras: extras]}
+    other ->
+      IO.puts "bracket_var:other: #{inspect other}"
+      other
   end
+
+  define :var_opts, "<':-'> ( (<!'}'> .)*)" do
+    all ->
+      # IO.puts "var_opts: #{inspect all}"
+      {:default, all |> to_string()}
+  end
+
 
   define :dollar_esc, "'$$'" do
     _val ->

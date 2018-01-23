@@ -11,7 +11,9 @@ defmodule ShellTemplate do
 
   """
   def format(template, values) when is_map(values) do
-    results = ShellTemplate.Grammar.parse!(template)
+    results = ShellTemplate.Grammar.parse(template)
+    IO.puts "\n\nresults: #{inspect results} -- #{inspect template}"
+    {:ok, results} = results
     values = Enum.map(values, fn {k,v} -> {to_string(k), v} end) |> Map.new
 
     Enum.map(results, &handle(&1, values)) |> to_string()
@@ -33,4 +35,3 @@ defmodule ShellTemplate do
 
 
 end
-
