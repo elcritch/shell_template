@@ -22,6 +22,8 @@ defmodule ShellTemplate do
 
     values = Enum.map(values, fn {k,v} -> {keyfn.(k), v} end) |> Map.new
 
+    formatter = opts[:iolist] == true && fn x -> x end || &to_string/1 
+
     Enum.map(results, &handle(&1, values)) |> to_string()
   end
 
