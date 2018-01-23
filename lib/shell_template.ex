@@ -10,11 +10,17 @@ defmodule ShellTemplate do
       "test: hello world!"
 
   """
-  def format(template, values) when is_map(values) do
+  def format(template, values, opts \\ []) when is_map(values) do
     results = ShellTemplate.Grammar.parse!(template)
-    # IO.puts "\n\nresults: #{inspect results} -- #{inspect template}"
-    # {:ok, results} = results
-    values = Enum.map(values, fn {k,v} -> {to_string(k), v} end) |> Map.new
+
+    keyfn =
+      if opts[:upcase] == true do
+        &String.upcase(to_string(&1))
+      else
+        &to_string/1
+      end
+
+    values = Enum.map(values, fn {k,v} -> {keyfn.(k), v} end) |> Map.new
 
     Enum.map(results, &handle(&1, values)) |> to_string()
   end

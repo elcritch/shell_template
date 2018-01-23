@@ -16,4 +16,9 @@ defmodule ShellTemplateTest do
     result = ShellTemplate.format("test: ${TEST:-$TEST1}?", %{TEST1: "hello world"})
     assert result == "test: hello world?"
   end
+
+  test "uppercase map keywords?" do
+    result = ShellTemplate.format("test: ${TEST}.", %{test: "hello world"}, upcase: true)
+    assert result == "test: hello world."
+  end
 end
